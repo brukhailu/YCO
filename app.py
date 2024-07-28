@@ -115,7 +115,7 @@ def index():
 @app.route('/download')
 def download_help():
     try:
-        path = "YCO_Help.pdf"
+        path = "Help/YCO_Help.pdf"
         return send_file(path, download_name = str("YCO_Help.pdf"), as_attachment=True)
     except:
         return render_template('error.html', error = 'Download Error!!')
