@@ -1,0 +1,159 @@
+<head>
+    <link href='https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css' rel='stylesheet' type='text/css'>
+    <script src="{{ url_for('static',filename='assets/js/core/jquery.3.2.1.min.js') }}"></script>
+
+</head>
+{% extends 'base.html' %}
+{% block logstate %}
+active
+{% endblock %}
+{% block main %}
+<div style="padding:10px; padding-top:0px; padding-top:0px; margin:0px">
+<!--    <div class="row">-->
+<!--        <div class="col-md-2">-->
+<!--            <input class="form-control" id="From" name="From" placeholder="From Date" type="text"/>-->
+<!--        </div>-->
+<!--        <div class="col-md-2">-->
+<!--            <input class="form-control" id="to" name="to" placeholder="To Date" type="text"/>-->
+<!--        </div>-->
+<!--        <div class="col-md-6">-->
+<!--&lt;!&ndash;            <input class="btn btn-secondary"  type="button" value="Range"/>&ndash;&gt;-->
+<!--            <button class="btn btn-secondary" id="range" name="range" value="Range" type="submit"><i-->
+<!--                        class="la la-compress">&nbsp;</i>Report-->
+<!--                </button>-->
+<!--        </div>-->
+        <div class="clearfix"></div>
+        <form action="/log" enctype="multipart/form-data" method="post">
+            <center>
+                <button class="btn btn-secondary" type="submit"><i
+                        class="la la-compress">&nbsp;</i>Update all fields
+                </button>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for message in messages %}
+                {% if "Error" not in message[1]: %}
+                <p class="alert alert-info" id="successnotify">Success!</p>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+            </center>
+        </form>
+<!--    </div>-->
+    <table class='display dataTable' id='empTable' title="Logged Data" width='100%'>
+        <thead>
+        <tr>
+            <th>RRN</th>
+            <th>PAN</th>
+            <th>AMOUNT</th>
+            <th>FILE_NAME</th>
+            <th>STATUS</th>
+            <th>INCL_IN_OUT</th>
+            <th>REQ_DATE</th>
+            <th>INSTITUTION</th>
+            <th>BANK</th>
+            <th>AQRRN</th>
+            <th>APPROVED_ON</th>
+            <th>CLEAR_DATE</th>
+            <th>FEEDBACK</th>
+            <th>ADD_FEEDBACK</th>
+            <th>STATUS_CLOSED</th>
+
+        </tr>
+        </thead>
+    </table>
+</div>
+<script>
+var minDate, maxDate;
+
+// Custom filtering function which will search data in column four between two values
+$.fn.dataTable.ext.search.push(
+    function( settings, data, dataIndex ) {
+        var min = minDate.val();
+        var max = maxDate.val();
+        var date = new Date( data[4] );
+
+        if (
+            ( min === null && max === null ) ||
+            ( min === null && date <= max ) ||
+            ( min <= date   && max === null ) ||
+            ( min <= date   && date <= max )
+        ) {
+            return true;
+        }
+        return false;
+    }
+);
+$(document).ready(function() {
+    var empDataTable = $('#empTable').DataTable({
+                'processing': true,
+                'serverSide': true,
+                'serverMethod': 'post',
+                'type' : 'export_type',
+                'escape' : 'false',
+                'paging': true,
+                'ajax': {
+                    'url':'/logdesp'
+                },
+                'lengthMenu': [[10, 15, 25, 50, 5000000], [10, 15, 25, 50, "All"]],
+                searching: true,
+                sort: true,
+                'columns': [
+                    { data: 'RRN' },
+                    { data: 'PAN' },
+                    { data: 'AMOUNT' },
+                    { data: 'FILE_NAME' },
+                    { data: 'STATUS' },
+                    { data: 'INCLUDED_IN_OUTGOING' },
+                    { data: 'REQUESTED_DATE' },
+                    { data: 'INSTITUTION' },
+                    { data: 'BANK' },
+                    { data: 'AQRRN' },
+                    { data: 'APPROVED_ON' },
+                    { data: 'CLEARING_DATE' },
+                    { data: 'FEEDBACK' },
+                    { data: 'ADDITIONAL_FEEDBACK' },
+                    { data: 'STATUS_CLOSED' },
+
+                ],
+                "dom": "<'row'<'form-inline' <'col-sm-offset-5'B>>>"
+                    +"<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>"
+                    +"<'row'<'col-sm-12'tr>>"
+                    +"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+                    "buttons":[
+                    {
+                            "extend":    "excelHtml5",
+                            "text":      "<i class='la la-file-excel-o'></i>",
+                            "titleAttr": "Excel",
+                            customizeData: function ( data ) {
+                               for (var i=0; i<data.body.length; i++){
+                                   for (var j=0; j<data.body[i].length; j++ ){
+                                       data.body[i][j] = '\u200C' + data.body[i][j];
+                                   }
+                               }
+                           }
+                    },
+                    {
+                            "extend":    "pdfHtml5",
+                            "orientation": "landscape",
+                            "pageSize" : "A2",
+                            "text":      "<i class='la la-file-pdf-o'></i>",
+                            "titleAttr": "PDF"
+                    }
+                    ],
+            });
+
+});
+
+
+
+</script>
+<script type="text/javascript">
+$(function() {
+setTimeout(function() { $("#successnotify").fadeOut(1500); }, 1000)
+})
+
+
+
+</script>
+{% endblock %}

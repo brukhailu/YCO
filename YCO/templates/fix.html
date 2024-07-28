@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block fixstate %}
+active
+{% endblock %}
+{% block main %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Fix Issues</div>
+                    </div>
+                    <form action="/svb" method="post" enctype="multipart/form-data" role="form1">
+                        {{ form1.csrf }}
+                        <div class="card-body">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="institution">Institution</label>
+                                    <select class="form-control" id="institution" name="institution">
+                                        <option selected disabled>Please Select</option>
+                                        <option>CUP</option>
+                                        <option>DCI</option>
+                                        <option>ET_Switch</option>
+                                        <option>JCB</option>
+                                        <option>Local_Transaction</option>
+                                        <option>MasterCard</option>
+                                        <option>VISA</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="bank">Choose Bank</label>
+                                    <select class="form-control" id="bank" name="bank">
+                                        <option selected disabled>Please Select</option>
+                                        <option>ADIB</option>
+                                        <option>AIB</option>
+                                        <option>BRIB</option>
+                                        <option>CBO</option>
+                                        <option>NIB</option>
+                                        <option>UB</option>
+                                    </select>
+                                    <br>
+                                </div>
+                            </div>
+                            <label for="rrn_column">RRN's Column:</label>
+                            <input type="number" class="form-control" id="rrn_column" name="rrn_column"
+                                   placeholder="RRN's Column">
+                            <br>
+                            <label for="pan_column">PAN's Column:</label>
+                            <input type="number" class="form-control" id="pan_column" name="pan_column"
+                                   placeholder="PAN's Column">
+                            <br>
+                            <label for="amount_column">Amount's Column:</label>
+                            <input type="number" class="form-control" id="amount_column"
+                                   name="amount_column"
+                                   placeholder="Amount's Column">
+                            <label for="file"></label>
+                            <input type="file" class="form-control-file" id="file" name="file">
+                            <br>
+                            <label class="form-check-label">
+                                <input class="form-check-input  select-all-checkbox" type="checkbox" name="save" value="Yes"
+                                       data-select="checkbox" data-target=".task-select">
+                                <span class="form-check-sign"></span>
+                                <b>Save report to database?</b>
+                            </label>
+                        </div>
+                        <div class="custom-file">
+                            <center>
+                                <button type="submit" class="btn btn-dark"><i
+                                        class="la la-compress">&nbsp;</i>Submit
+                                </button>
+                            </center>
+                        </div>
+                    </form>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if "Error" not in message[1]: %}
+                    <div class="alert alert-info">
+                        <strong>Success! </strong>
+                    </div>
+                    {% endif %}
+                    {% if "Error" in message[1]: %}
+                    <br>
+                    <div class="alert alert-danger">
+                        {{ message[1] }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

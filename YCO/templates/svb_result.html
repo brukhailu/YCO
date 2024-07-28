@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block bulk %}
+active
+{% endblock %}
+{% block main %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">{{ institution }} Settlement Result
+                            {% if save is not none %}
+                            <center><p class="la la-save"></p>
+                                Saved
+                            </center>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col">Input</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Bank</td>
+                            <td>{{ bank }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>File_Name</td>
+                            <td>{{ filename }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>RRN_Column</td>
+                            <td>{{ rrn_column }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4</th>
+                            <td>PAN_Column</td>
+                            <td>{{ pan_column }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">5</th>
+                            <td>Amount_Column</td>
+                            <td>{{ amount_column }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">6</th>
+                            <td>Output_Folder_Name</td>
+                            <td>{{ output_file_name }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">7</th>
+                            <td>Result_File</td>
+                            <td>RESULT.{{ output_file_name }}.xls</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if "Error" not in message[1]: %}
+                    <a href="{{ url_for('.download_file', variable=output_file_name) }}" class="btn btn-dark"
+                       role="button">
+                        <i class="la la-cloud-download"></i>&nbsp;
+                        <strong> Download Result </strong>
+                    </a>
+                    {% endif %}
+                    {% if "Error" in message[1]: %}
+                    <div class="alert alert-danger">
+                        {{ message[1] }}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
